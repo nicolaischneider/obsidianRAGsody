@@ -10,8 +10,9 @@ def run_cli():
     # Create rich console for markdown rendering
     console = Console()
 
-    print("\nWelcome to Obsidian RAGsody!")
-    print("- Type 'quit' or 'exit' to quit.")
+    # Styled welcome message
+    console.print("\n[bold]Welcome to [purple]Obsidian[/purple] [green]RAG[/green]sody![/bold]")
+    console.print("- Type 'quit' or 'exit' to quit.")
 
     # Check environment setup first
     vault_path, api_key = check_and_setup_env()
@@ -37,14 +38,13 @@ def run_cli():
 
             # User requests to perform a RAG query
             if isinstance(result, RagVaultRequest):
-                print("\nSearching vault...")
+                console.print("\nSearching vault...")
                 answer = query_vault(result.prompt)
 
                 # Render the markdown response with rich
                 markdown = Markdown(answer)
-                console.print("\n")
                 console.print(markdown)
-                console.print("\n")
+                console.print()
             
             # User requests to generate new markdown content
             elif isinstance(result, GenerateNewMarkdownRequest):
