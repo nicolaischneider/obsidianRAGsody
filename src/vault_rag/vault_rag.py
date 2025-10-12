@@ -60,7 +60,11 @@ class VaultRAG:
         )
 
         documents = reader.load_data()
-        print(f"Loaded {len(documents)} documents")
+
+        # Import here to avoid circular imports
+        from rich.console import Console
+        console = Console()
+        console.print(f"[dim italic]Loaded {len(documents)} documents[/dim italic]")
 
         if len(documents) == 0:
             print("WARNING: No documents loaded! Check your vault path.")
@@ -117,10 +121,15 @@ _vault_rag: Optional[VaultRAG] = None
 def initialize_rag(vault_path: str, api_key: str) -> VaultRAG:
     global _vault_rag
     if _vault_rag is None:
-        print("Initializing RAG system...")
+        # Import here to avoid circular imports
+        from rich.console import Console
+        console = Console()
+        console.print("[dim italic]Initializing RAG system...[/dim italic]")
+
         _vault_rag = VaultRAG(vault_path, api_key)
         _vault_rag.build_rag()
-        print("RAG system ready!")
+
+        console.print("[dim italic]RAG system ready![/dim italic]")
     return _vault_rag
 
 

@@ -29,7 +29,7 @@ On first run, enter your Obsidian vault path and OpenAI API key.
 
 - **[LlamaIndex](https://github.com/run-llama/llama_index)**: RAG framework for vault querying
 - **[OpenAI](https://github.com/openai/openai-python)**: GPT-4o-mini for responses, text-embedding-3-small for search
-- **[requests](https://github.com/psf/requests) + [BeautifulSoup](https://github.com/getannotations/bs4)**: Web scraping
+- **[requests](https://github.com/psf/requests) + [BeautifulSoup](https://pypi.org/project/beautifulsoup4/)**: Web scraping
 - **[rich](https://github.com/Textualize/rich)**: Beautiful markdown rendering
 - **[prompt-toolkit](https://github.com/prompt-toolkit/python-prompt-toolkit)**: Interactive CLI
 

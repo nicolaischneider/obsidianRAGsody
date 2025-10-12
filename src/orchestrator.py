@@ -11,8 +11,9 @@ def run_cli():
     # Create rich console for markdown rendering
     console = Console()
 
-    # Styled welcome message
-    console.print("\n[bold]Welcome to [purple]Obsidian[/purple] [green]RAG[/green]sody![/bold]")
+    # Styled welcome message as markdown title
+    welcome_md = "# Welcome to Obsidian RAGsody\n"
+    console.print(Markdown(welcome_md))
     console.print("- Type 'quit' or 'exit' to quit.")
 
     # Check environment setup first
@@ -21,11 +22,15 @@ def run_cli():
     # Initialize RAG system
     initialize_rag(vault_path, api_key)
 
+    # Add markdown separator
+    separator_md = "---"
+
     # Start the interactive prompt loop
     while True:
         try:
-            # Get user input
-            user_input = prompt("obsidian-ragsody> ")
+            # Get user input with chat-like prompt
+            console.print(Markdown(separator_md))
+            user_input = prompt("You: ")
 
             # Handle exit commands
             if user_input.lower() in ['quit', 'exit']:
@@ -39,7 +44,7 @@ def run_cli():
 
             # Case 1: User requests to perform a RAG query
             if isinstance(result, RagVaultRequest):
-                console.print("\nSearching vault...")
+                console.print("\n[dim italic]Searching vault...[/dim italic]\n")
                 answer = query_vault(result.prompt)
 
                 # Render the markdown response with rich
@@ -49,7 +54,9 @@ def run_cli():
 
             # Case 2: User requests to generate new markdown content
             elif isinstance(result, GenerateNewMarkdownRequest):
-                console.print("\nGenerating markdown from URLs...")
+                console.print("\n[dim italic]Generating markdown from URLs...[/dim italic]\n")
+
+                # Generate markdown and save to vault
                 result_data = generate_markdown_from_urls(
                     urls=result.urls,
                     prompt=result.prompt,
@@ -57,6 +64,7 @@ def run_cli():
                     api_key=api_key
                 )
 
+                # Handle result
                 if isinstance(result_data, dict) and result_data.get("success"):
                     # Print success message
                     console.print(f"\nCreated new note: {result_data['file_path']}")
