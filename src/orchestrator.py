@@ -34,7 +34,7 @@ def run_cli():
 
             # Handle exit commands
             if user_input.lower() in ['quit', 'exit']:
-                print("\nBye, Dude!")
+                print("\nBye, dude!")
                 break
 
             # Interpret the request
@@ -64,15 +64,19 @@ def run_cli():
                     api_key=api_key
                 )
 
-                # Handle result
+                # Handle success result
                 if isinstance(result_data, dict) and result_data.get("success"):
-                    # Print success message
-                    console.print(f"\nCreated new note: {result_data['file_path']}")
 
                     # Render the generated markdown
                     markdown = Markdown(result_data['markdown_content'])
                     console.print(markdown)
                     console.print()
+                    
+                    # Print success message
+                    console.print("\n[dim]------[/dim]")
+                    console.print(f"Created new note:\n{result_data['file_path']}\n")
+                
+                # Handle failure case
                 else:
                     # Handle error case
                     error_msg = result_data.get("error", str(result_data))
@@ -80,12 +84,12 @@ def run_cli():
 
             # Unknown request type
             else:
-                console.print("Unknown request type")
+                console.print("[red]Unknown request type[/red]")
 
         except KeyboardInterrupt:
-            console.print("\nBye, Dude!")
+            console.print("\nBye, dude!")
             break
 
         except EOFError:
-            console.print("\nBye, Dude!")
+            console.print("\nBye, dude!")
             break

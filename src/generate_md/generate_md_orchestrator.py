@@ -18,15 +18,15 @@ def generate_markdown_from_urls(urls: List[str], prompt: str, vault_path: str, a
             all_content.append({"url": url, "content": content})
 
         # Step 2: Generate combined markdown summary using AI
-        combined_markdown = _generate_combined_markdown_summary(all_content, prompt, api_key)
+        markdown_file = _generate_combined_markdown_summary(all_content, prompt, api_key)
 
         # Step 3: Create and save the single markdown file with optimal placement
-        file_path = save_markdown_file(combined_markdown, urls, vault_path)
+        file_path = save_markdown_file(markdown_file, urls, vault_path)
 
         return {
             "success": True,
             "file_path": file_path,
-            "markdown_content": combined_markdown
+            "markdown_content": markdown_file
         }
 
     except Exception as e:

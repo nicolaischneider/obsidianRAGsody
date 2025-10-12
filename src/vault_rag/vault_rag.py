@@ -67,7 +67,7 @@ class VaultRAG:
         console.print(f"[dim italic]Loaded {len(documents)} documents[/dim italic]")
 
         if len(documents) == 0:
-            print("WARNING: No documents loaded! Check your vault path.")
+            console.print("[red]WARNING: No documents loaded! Check your vault path.[/red]")
 
         return documents
 

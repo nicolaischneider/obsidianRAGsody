@@ -43,7 +43,7 @@ def _create_ai_prompt(content_text: str, user_prompt: str) -> str:
 
 Based on this content and the following request: "{user_prompt}"
 
-Create a comprehensive markdown document. Use proper markdown formatting including headers, lists, bold text, links, etc. Return ONLY the markdown content without any introduction or explanation."""
+Create a markdown document. Use proper markdown formatting including headers, lists, bold text, links, etc. Return ONLY the markdown content without any introduction or explanation."""
 
     return system_prompt
 
