@@ -879,23 +879,27 @@ name = "obsidian-ragsody"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "beautifulsoup4" },
     { name = "llama-index-core" },
     { name = "llama-index-embeddings-openai" },
     { name = "llama-index-llms-openai" },
     { name = "llama-index-readers-file" },
     { name = "prompt-toolkit" },
     { name = "python-dotenv" },
+    { name = "requests" },
     { name = "rich" },
 ]
 
 [package.metadata]
 requires-dist = [
+    { name = "beautifulsoup4", specifier = ">=4.14.2" },
     { name = "llama-index-core", specifier = ">=0.14.4" },
     { name = "llama-index-embeddings-openai", specifier = ">=0.5.1" },
     { name = "llama-index-llms-openai", specifier = ">=0.6.4" },
     { name = "llama-index-readers-file", specifier = ">=0.5.4" },
     { name = "prompt-toolkit", specifier = ">=3.0.52" },
     { name = "python-dotenv", specifier = ">=1.1.1" },
+    { name = "requests", specifier = ">=2.32.5" },
     { name = "rich", specifier = ">=14.2.0" },
 ]
 

@@ -1,1 +1,88 @@
 # Page Generator for given data as markdown
+
+from typing import List
+import openai
+
+
+# Generate markdown content from scraped URLs using OpenAI
+def generate_markdown_from_content(all_content: List[dict], prompt: str, api_key: str) -> str:
+    # Prepare the content for the AI prompt
+    content_text = _prepare_content_for_ai(all_content)
+
+    # Create the AI prompt
+    ai_prompt = _create_ai_prompt(content_text, prompt)
+
+    # Call OpenAI to generate markdown
+    response = _call_openai_api(ai_prompt, api_key)
+
+    # Clean the response to extract only markdown content
+    cleaned_response = _extract_markdown_content(response)
+
+    return cleaned_response
+
+
+# Prepare scraped content for AI processing
+def _prepare_content_for_ai(all_content: List[dict]) -> str:
+    prepared_content = []
+
+    for i, item in enumerate(all_content, 1):
+        url = item["url"]
+        content = item["content"]
+
+        section = f"=== Source {i}: {url} ===\n{content}\n"
+        prepared_content.append(section)
+
+    return "\n".join(prepared_content)
+
+
+# Create the prompt for OpenAI
+def _create_ai_prompt(content_text: str, user_prompt: str) -> str:
+    system_prompt = f"""I have fetched content from the given URLs. The content can be found below.
+
+{content_text}
+
+Based on this content and the following request: "{user_prompt}"
+
+Create a comprehensive markdown document. Use proper markdown formatting including headers, lists, bold text, links, etc. Return ONLY the markdown content without any introduction or explanation."""
+
+    return system_prompt
+
+
+# Call OpenAI API to generate markdown
+def _call_openai_api(prompt: str, api_key: str) -> str:
+    try:
+        client = openai.OpenAI(api_key=api_key)
+
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.3  # Lower temperature for more consistent output
+        )
+
+        return response.choices[0].message.content.strip()
+
+    except Exception as e:
+        return f"Error generating markdown: {str(e)}"
+
+
+# Extract markdown content from AI response, removing outer code blocks
+def _extract_markdown_content(response: str) -> str:
+    cleaned = response.strip()
+
+    # Check if response is wrapped in markdown code blocks
+    if cleaned.startswith('```markdown'):
+        # Find the last closing ``` (working backwards)
+        end_marker = cleaned.rfind('```')
+        if end_marker > 11:  # More than just the opening ```markdown
+            # Extract content between ```markdown and the last closing ```
+            cleaned = cleaned[11:end_marker].strip()
+
+    elif cleaned.startswith('```'):
+        # Handle case where it's just ``` without markdown
+        end_marker = cleaned.rfind('```')
+        if end_marker > 3:
+            cleaned = cleaned[3:end_marker].strip()
+
+    return cleaned

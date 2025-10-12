@@ -4,6 +4,7 @@ from rich.markdown import Markdown
 from .env_setup import check_and_setup_env
 from .request_interpreter import interpret_request, RagVaultRequest, GenerateNewMarkdownRequest
 from .vault_rag.vault_rag import initialize_rag, query_vault
+from .generate_md.generate_md_orchestrator import generate_markdown_from_urls
 
 # Main CLI orchestrator that handles the interactive loop.
 def run_cli():
@@ -36,7 +37,7 @@ def run_cli():
 
             # Process the interpreted request
 
-            # User requests to perform a RAG query
+            # Case 1: User requests to perform a RAG query
             if isinstance(result, RagVaultRequest):
                 console.print("\nSearching vault...")
                 answer = query_vault(result.prompt)
@@ -45,21 +46,26 @@ def run_cli():
                 markdown = Markdown(answer)
                 console.print(markdown)
                 console.print()
-            
-            # User requests to generate new markdown content
+
+            # Case 2: User requests to generate new markdown content
             elif isinstance(result, GenerateNewMarkdownRequest):
-                print(f"Generate Markdown: {result.prompt}")
-                print(f"URLs found: {result.urls}")
-                # TODO: Call markdown generator
+                console.print("\nGenerating markdown from URLs...\n")
+                result_message = generate_markdown_from_urls(
+                    urls=result.urls,
+                    prompt=result.prompt,
+                    vault_path=vault_path,
+                    api_key=api_key
+                )
+                console.print(f"\n{result_message}\n")
 
             # Unknown request type
             else:
-                print("Unknown request type")
+                console.print("Unknown request type")
 
         except KeyboardInterrupt:
-            print("\nBye, Dude!")
+            console.print("\nBye, Dude!")
             break
 
         except EOFError:
-            print("\nBye, Dude!")
+            console.print("\nBye, Dude!")
             break
