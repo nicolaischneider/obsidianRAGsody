@@ -1,0 +1,1 @@
+# Optimal File Organizer for Obsidian Vault

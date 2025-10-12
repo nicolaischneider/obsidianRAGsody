@@ -8,3 +8,11 @@ CLI tool for Obsidian vault interaction with two main features:
 2. **URL to Note**: Create markdown files from URLs with smart folder placement
 
 Built in Python.
+
+## Setup
+
+```bash
+uv venv
+uv sync
+uv run python main.py
+```

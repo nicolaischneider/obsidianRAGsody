@@ -1,0 +1,1 @@
+# Builds the RAG (Retrieval-Augmented Generation) model for querying the vault.

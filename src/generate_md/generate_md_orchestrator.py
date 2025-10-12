@@ -1,0 +1,1 @@
+# Orchestrates the generation and storage of markdown files in vault from various sources.
