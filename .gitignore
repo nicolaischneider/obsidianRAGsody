@@ -1,0 +1,95 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+pip-wheel-metadata/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Virtual environments
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IDE / editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# macOS / Linux
+.DS_Store
+.AppleDouble
+.LSOverride
+.Trash-*
+Thumbs.db
+
+# Logs
+*.log
+
+# uv (Python package manager)
+.uv/
+.uv_cache/
+.uv_lock/
+
+# Claude related files
+claude.md
+claude-*.md
+claude_notes/
+claude_exports/
+claude_sessions/
+
+# Local configuration
+*.env
+.env.*
+secrets.*
+config.local.*
