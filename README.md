@@ -1,53 +1,44 @@
 # Obsidian RAGsody
 
-A powerful CLI tool for intelligent interaction with your Obsidian vault. Ask questions about your notes using natural language and get AI-powered answers based on your vault content.
+CLI tool for intelligent Obsidian vault interaction with two main features:
 
 ## Features
 
 ### 1. Vault Querying (✅ Working)
-Ask questions about your Obsidian vault content using LlamaIndex and OpenAI. The system:
-- Indexes all markdown files in your vault
-- Uses semantic search to find relevant content
-- Generates contextual answers using GPT-4o-mini
-
-**Example queries:**
+Ask questions about your vault content using natural language.
 - "What did I write about machine learning?"
 - "Show me my notes on productivity"
-- "What are my thoughts on Python?"
 
-### 2. URL to Note (🚧 Coming Soon)
-Create markdown files from URLs with smart folder placement.
-
-## How It Works
-
-1. **Startup**: Indexes all `.md` files in your Obsidian vault using LlamaIndex
-2. **Query Processing**: Analyzes your input to determine if you want to query existing content or create new content
-3. **Semantic Search**: Finds relevant content using OpenAI embeddings
-4. **AI Response**: Generates comprehensive answers using GPT-4o-mini
+### 2. URL to Note (✅ Working)
+Create markdown files from URLs. Files saved to `RAGsody_created/` folder.
+- "Create a note from https://example.com about AI trends"
+- "Summarize this article: https://blog.example.com/post"
 
 ## Setup
 
 ```bash
-# Install dependencies
 uv venv
-uv add llama-index-core llama-index-llms-openai llama-index-embeddings-openai llama-index-readers-file
-uv add prompt-toolkit python-dotenv
-
-# Run the tool
+uv add llama-index-core llama-index-llms-openai llama-index-embeddings-openai
+uv add prompt-toolkit python-dotenv requests beautifulsoup4 rich
 uv run python main.py
 ```
 
-## Configuration
-
-On first run, you'll be prompted to enter:
-- **Obsidian Vault Path**: Path to your Obsidian vault directory
-- **OpenAI API Key**: Your OpenAI API key for LLM and embeddings
-
-These are saved in a `.env` file for future use.
+On first run, enter your Obsidian vault path and OpenAI API key.
 
 ## Tech Stack
 
-- **Python 3.10+**
-- **LlamaIndex**: RAG framework for document indexing and querying
-- **OpenAI**: GPT-4o-mini for responses, text-embedding-3-small for search
-- **prompt-toolkit**: Interactive CLI interface
+- **[LlamaIndex](https://github.com/run-llama/llama_index)**: RAG framework for vault querying
+- **[OpenAI](https://github.com/openai/openai-python)**: GPT-4o-mini for responses, text-embedding-3-small for search
+- **[requests](https://github.com/psf/requests) + [BeautifulSoup](https://github.com/getannotations/bs4)**: Web scraping
+- **[rich](https://github.com/Textualize/rich)**: Beautiful markdown rendering
+- **[prompt-toolkit](https://github.com/prompt-toolkit/python-prompt-toolkit)**: Interactive CLI
+
+## Outlook
+
+### Future Features
+- **LLM Model Selection**: Select the Open AI model of your choice
+
+### Performance Improvements
+- **Faster parsing**: Upgrade to `selectolax` for 10x faster HTML parsing
+- **Index caching**: Persistent RAG index storage for faster startup
+- **Parallel scraping**: Concurrent URL processing for multiple links
