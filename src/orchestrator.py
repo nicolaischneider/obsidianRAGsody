@@ -49,14 +49,26 @@ def run_cli():
 
             # Case 2: User requests to generate new markdown content
             elif isinstance(result, GenerateNewMarkdownRequest):
-                console.print("\nGenerating markdown from URLs...\n")
-                result_message = generate_markdown_from_urls(
+                console.print("\nGenerating markdown from URLs...")
+                result_data = generate_markdown_from_urls(
                     urls=result.urls,
                     prompt=result.prompt,
                     vault_path=vault_path,
                     api_key=api_key
                 )
-                console.print(f"\n{result_message}\n")
+
+                if isinstance(result_data, dict) and result_data.get("success"):
+                    # Print success message
+                    console.print(f"\nCreated new note: {result_data['file_path']}")
+
+                    # Render the generated markdown
+                    markdown = Markdown(result_data['markdown_content'])
+                    console.print(markdown)
+                    console.print()
+                else:
+                    # Handle error case
+                    error_msg = result_data.get("error", str(result_data))
+                    console.print(f"\nError: {error_msg}\n")
 
             # Unknown request type
             else:

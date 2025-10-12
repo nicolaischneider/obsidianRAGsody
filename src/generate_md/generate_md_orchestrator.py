@@ -4,6 +4,7 @@ from typing import List
 from pathlib import Path
 from .core.website_scraper import scrape_url
 from .core.page_generator import generate_markdown_from_content
+from .core.optimal_file_organizer import save_markdown_file
 
 
 # Main function to process URLs and create markdown files in the vault
@@ -19,18 +20,20 @@ def generate_markdown_from_urls(urls: List[str], prompt: str, vault_path: str, a
         # Step 2: Generate combined markdown summary using AI
         combined_markdown = _generate_combined_markdown_summary(all_content, prompt, api_key)
 
-        print(combined_markdown)  # For debugging
+        # Step 3: Create and save the single markdown file with optimal placement
+        file_path = save_markdown_file(combined_markdown, urls, vault_path)
 
-        # Step 3: Determine optimal folder placement
-        folder_path = _determine_folder_placement(urls, all_content, vault_path)
-
-        # Step 4: Create and save the single markdown file
-        file_path = _save_markdown_file(combined_markdown, urls, folder_path)
-
-        return f"Created combined note: {file_path}"
+        return {
+            "success": True,
+            "file_path": file_path,
+            "markdown_content": combined_markdown
+        }
 
     except Exception as e:
-        return f"Failed to process URLs: {str(e)}"
+        return {
+            "success": False,
+            "error": str(e)
+        }
 
 
 # Scrape content from a given URL
@@ -43,19 +46,3 @@ def _generate_combined_markdown_summary(all_content: List[dict], prompt: str, ap
     return generate_markdown_from_content(all_content, prompt, api_key)
 
 
-# Determine the best folder for the new markdown file
-def _determine_folder_placement(urls: List[str], all_content: List[dict], vault_path: str) -> Path:
-    # TODO: Implement intelligent folder placement algorithm
-    vault = Path(vault_path)
-    return vault / "generated"  # Default folder for now
-
-
-# Save markdown content to a file in the specified folder
-def _save_markdown_file(markdown_content: str, urls: List[str], folder_path: Path) -> str:
-    # TODO: Implement file saving with proper filename generation
-    #folder_path.mkdir(exist_ok=True)
-    #filename = "combined_note.md"  # Placeholder filename
-    #file_path = folder_path / filename
-
-    # TODO: Actually write the file
-    return ""
