@@ -11,4 +11,5 @@ dependencies = [
     "llama-index-readers-file>=0.5.4",
     "prompt-toolkit>=3.0.52",
     "python-dotenv>=1.1.1",
+    "rich>=14.2.0",
 ]

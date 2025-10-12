@@ -3,6 +3,8 @@
 # and answer questions about the content using semantic search + LLM
 
 import os
+import logging
+import warnings
 from pathlib import Path
 from typing import Optional
 
@@ -12,6 +14,13 @@ from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.core.storage.docstore import SimpleDocumentStore
 from llama_index.core.storage.index_store import SimpleIndexStore
 from llama_index.core.vector_stores import SimpleVectorStore
+
+# Disable HTTP request logging
+logging.getLogger("openai").setLevel(logging.WARNING)
+logging.getLogger("httpx").setLevel(logging.WARNING)
+
+# Suppress Pydantic warnings
+warnings.filterwarnings("ignore", category=UserWarning, module="pydantic.*")
 
 class VaultRAG:
 
@@ -50,7 +59,6 @@ class VaultRAG:
             recursive=True  # Include subfolders
         )
 
-        print(f"Loading documents from {self.vault_path}")
         documents = reader.load_data()
         print(f"Loaded {len(documents)} documents")
 
@@ -69,16 +77,7 @@ class VaultRAG:
         documents = self._load_documents()
 
         # Build index fresh every time (no caching for now)
-        print("Building index from documents... (this may take a moment)")
-
-        # Build the vector index (this creates embeddings for all documents)
-        print(f"Creating index from {len(documents)} documents...")
         self.index = VectorStoreIndex.from_documents(documents)
-
-        # Check if index has content
-        print(f"Index created with {len(self.index.docstore.docs)} document chunks")
-        print("Index built successfully!")
-
         return self.index
 
     # Query the RAG system with a question about your vault content
@@ -88,29 +87,18 @@ class VaultRAG:
             self.build_rag()
 
         try:
-            # Create a retriever to see what documents are being found
-            retriever = self.index.as_retriever(similarity_top_k=5)
-
-            print(f"Querying: {prompt}")
-
-            # Check what documents are retrieved
-            retrieved_nodes = retriever.retrieve(prompt)
-            print(f"Retrieved {len(retrieved_nodes)} nodes")
-
-            for i, node in enumerate(retrieved_nodes):
-                print(f"Node {i+1}: {node.score:.3f} - {node.text[:100]}...")
-
             # Create a query engine from the index
             query_engine = self.index.as_query_engine(
                 similarity_top_k=5,  # Return top 5 most relevant chunks
-                response_mode="tree_summarize"  # Try different response mode
+                response_mode="tree_summarize"
             )
 
+            # Add instruction to format response as markdown
+            markdown_prompt = f"{prompt}\n\nPlease format your response using markdown syntax (headers, lists, bold text, etc.) for better readability."
+
             # Query the engine and get response
-            response = query_engine.query(prompt)
+            response = query_engine.query(markdown_prompt)
             response_str = str(response).strip()
-            print(f"Response received: {len(response_str)} characters")
-            print(f"Actual response: '{response_str}'")
 
             if not response_str or response_str.lower() in ['empty response', 'none', '']:
                 return "No relevant information found in the vault for your query."

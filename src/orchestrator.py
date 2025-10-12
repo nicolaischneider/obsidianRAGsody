@@ -1,10 +1,15 @@
 from prompt_toolkit import prompt
+from rich.console import Console
+from rich.markdown import Markdown
 from .env_setup import check_and_setup_env
 from .request_interpreter import interpret_request, RagVaultRequest, GenerateNewMarkdownRequest
 from .vault_rag.vault_rag import initialize_rag, query_vault
 
 # Main CLI orchestrator that handles the interactive loop.
 def run_cli():
+    # Create rich console for markdown rendering
+    console = Console()
+
     print("\nWelcome to Obsidian RAGsody!")
     print("- Type 'quit' or 'exit' to quit.")
 
@@ -32,9 +37,14 @@ def run_cli():
 
             # User requests to perform a RAG query
             if isinstance(result, RagVaultRequest):
-                print("🔍 Searching vault...")
+                print("\nSearching vault...")
                 answer = query_vault(result.prompt)
-                print(f"\n{answer}\n")
+
+                # Render the markdown response with rich
+                markdown = Markdown(answer)
+                console.print("\n")
+                console.print(markdown)
+                console.print("\n")
             
             # User requests to generate new markdown content
             elif isinstance(result, GenerateNewMarkdownRequest):

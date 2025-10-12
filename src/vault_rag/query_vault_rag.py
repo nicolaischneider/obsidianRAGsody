@@ -1,1 +1,0 @@
-# Queries the Obsidian vault using RAG-Anything
