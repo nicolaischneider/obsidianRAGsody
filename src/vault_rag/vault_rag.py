@@ -114,6 +114,37 @@ class VaultRAG:
         except Exception as e:
             return f"Error querying RAG: {e}"
 
+    # Find most similar documents to given content for folder placement
+    def find_similar_documents(self, content: str, top_k: int = 3) -> list:
+        """Find most similar documents and return their file paths."""
+        if self.index is None:
+            self.build_rag()
+
+        try:
+            # Create a retriever to get similar documents
+            retriever = self.index.as_retriever(similarity_top_k=top_k)
+
+            # Retrieve similar documents
+            nodes = retriever.retrieve(content)
+
+            # Extract file paths from the nodes
+            similar_files = []
+            for node in nodes:
+                # The file path is stored in the node metadata
+                if hasattr(node, 'metadata') and 'file_path' in node.metadata:
+                    file_path = node.metadata['file_path']
+                    similar_files.append(file_path)
+                elif hasattr(node, 'node') and hasattr(node.node, 'metadata'):
+                    file_path = node.node.metadata.get('file_path', '')
+                    if file_path:
+                        similar_files.append(file_path)
+
+            return similar_files
+
+        except Exception as e:
+            print(f"Error finding similar documents: {e}")
+            return []
+
 
 # Global RAG instance - singleton pattern to save memory and processing
 _vault_rag: Optional[VaultRAG] = None
@@ -140,3 +171,10 @@ def query_vault(prompt: str) -> str:
     if _vault_rag is None:
         return "RAG system not initialized. Please run initialize_rag() first."
     return _vault_rag.query(prompt)
+
+
+# Find similar documents for optimal folder placement
+def find_similar_files(content: str, top_k: int = 3) -> list:
+    if _vault_rag is None:
+        return []
+    return _vault_rag.find_similar_documents(content, top_k)

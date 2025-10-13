@@ -2,6 +2,7 @@
 
 from pathlib import Path
 from typing import List
+from ...vault_rag.vault_rag import find_similar_files
 
 
 # Generate filename from markdown title (first line)
@@ -34,16 +35,29 @@ def _generate_filename_from_title(markdown_content: str) -> str:
 
     return f"{filename}.md"
 
-# Find the optimal folder for the new markdown file
-def _find_optimal_folder(urls: List[str], markdown_content: str, vault_path: Path) -> Path:
-    # TODO: Implement intelligent folder placement algorithm
-    # For now, create a "generated" folder
-    return vault_path / "generated"
+# Find the optimal folder for the new markdown file using RAG similarity
+def _find_optimal_folder(markdown_content: str, vault_path: Path) -> Path:
+    # Use RAG to find most similar existing files
+    similar_files = find_similar_files(markdown_content, top_k=3)
 
-# Save markdown content to a file in RAGsody_created folder
+    if similar_files:
+        # Take the first (most similar) file and get its directory
+        most_similar_file = Path(similar_files[0])
+        optimal_folder = most_similar_file.parent
+
+        # Make sure the folder exists and is within the vault
+        if optimal_folder.exists() and str(optimal_folder).startswith(str(vault_path)):
+            return optimal_folder
+
+    # Fallback to RAGsody_created if no similar files found or path issues
+    return vault_path / "RAGsody_created"
+
+# Save markdown content to optimal folder based on RAG similarity
 def save_markdown_file(markdown_content: str, urls: List[str], vault_path: str) -> str:
     vault = Path(vault_path)
-    folder_path = vault / "RAGsody_created"
+
+    # Find optimal folder using RAG similarity
+    folder_path = _find_optimal_folder(markdown_content, vault)
 
     filename = _generate_filename_from_title(markdown_content)
 

@@ -49,7 +49,7 @@ On first run, enter your *Obsidian vault path* and *OpenAI API key*.
 ### Future Features
 - [ ] **Automatic Ordering of new files**: Automatically organize newly created markdown files into appropriate folders.
 - [ ] **Review of files before adding to vault**: Implement a review step for new files before they are added to the vault.
-- [ ] **LLM Model Selection**: Select the Open AI model of your choice
+- [x] **LLM Model Selection**: Select the Open AI model of your choice
 - [ ] **Install**: Install the tool in your system for easy access
 
 ### Performance Improvements
