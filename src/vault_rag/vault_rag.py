@@ -25,11 +25,13 @@ warnings.filterwarnings("ignore", category=UserWarning, module="pydantic.*")
 class VaultRAG:
 
     # Initialize RAG system for Obsidian vault processing
-    def __init__(self, vault_path: str, api_key: str):
+    def __init__(self, vault_path: str, api_key: str, llm_model: str):
         # Store the path to your Obsidian vault (where your .md files are)
         self.vault_path = Path(vault_path)
         # OpenAI API key for LLM and embedding calls
         self.api_key = api_key
+        # OpenAI model to use
+        self.llm_model = llm_model
         # The actual RAG index (starts as None, built later)
         self.index: Optional[VectorStoreIndex] = None
         # Set up LlamaIndex configuration
@@ -39,7 +41,7 @@ class VaultRAG:
     def _setup_llama_config(self):
         # Set up OpenAI LLM (the "brain" that generates answers)
         Settings.llm = OpenAI(
-            model="gpt-4o-mini",
+            model=self.llm_model,
             api_key=self.api_key,
             temperature=0.1  # Low temperature for more consistent answers
         )
@@ -118,7 +120,7 @@ _vault_rag: Optional[VaultRAG] = None
 
 
 # Initialize the global RAG instance - call this once when your app starts
-def initialize_rag(vault_path: str, api_key: str) -> VaultRAG:
+def initialize_rag(vault_path: str, api_key: str, llm_model: str) -> VaultRAG:
     global _vault_rag
     if _vault_rag is None:
         # Import here to avoid circular imports
@@ -126,7 +128,7 @@ def initialize_rag(vault_path: str, api_key: str) -> VaultRAG:
         console = Console()
         console.print("[dim italic]Initializing RAG system...[/dim italic]")
 
-        _vault_rag = VaultRAG(vault_path, api_key)
+        _vault_rag = VaultRAG(vault_path, api_key, llm_model)
         _vault_rag.build_rag()
 
         console.print("[dim italic]RAG system ready![/dim italic]")

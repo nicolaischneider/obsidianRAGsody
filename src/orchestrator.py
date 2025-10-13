@@ -17,10 +17,10 @@ def run_cli():
     console.print("- Type 'quit' or 'exit' to quit.")
 
     # Check environment setup first
-    vault_path, api_key = check_and_setup_env()
+    vault_path, api_key, llm_model, user_name = check_and_setup_env()
 
     # Initialize RAG system
-    initialize_rag(vault_path, api_key)
+    initialize_rag(vault_path, api_key, llm_model)
 
     # Add markdown separator
     separator_md = "---"
@@ -30,11 +30,11 @@ def run_cli():
         try:
             # Get user input with chat-like prompt
             console.print(Markdown(separator_md))
-            user_input = prompt("You: ")
+            user_input = prompt(f"{user_name}: ")
 
             # Handle exit commands
             if user_input.lower() in ['quit', 'exit']:
-                print("\nBye, dude!")
+                print(f"\nBye, {user_name}!")
                 break
 
             # Interpret the request
@@ -61,7 +61,8 @@ def run_cli():
                     urls=result.urls,
                     prompt=result.prompt,
                     vault_path=vault_path,
-                    api_key=api_key
+                    api_key=api_key,
+                    llm_model=llm_model
                 )
 
                 # Handle success result
@@ -87,9 +88,9 @@ def run_cli():
                 console.print("[red]Unknown request type[/red]")
 
         except KeyboardInterrupt:
-            console.print("\nBye, dude!")
+            console.print(f"\nBye, {user_name}!")
             break
 
         except EOFError:
-            console.print("\nBye, dude!")
+            console.print(f"\nBye, {user_name}!")
             break

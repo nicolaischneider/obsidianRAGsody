@@ -5,7 +5,7 @@ import openai
 
 
 # Generate markdown content from scraped URLs using OpenAI
-def generate_markdown_from_content(all_content: List[dict], prompt: str, api_key: str) -> str:
+def generate_markdown_from_content(all_content: List[dict], prompt: str, api_key: str, llm_model: str) -> str:
     # Prepare the content for the AI prompt
     content_text = _prepare_content_for_ai(all_content)
 
@@ -13,7 +13,7 @@ def generate_markdown_from_content(all_content: List[dict], prompt: str, api_key
     ai_prompt = _create_ai_prompt(content_text, prompt)
 
     # Call OpenAI to generate markdown
-    response = _call_openai_api(ai_prompt, api_key)
+    response = _call_openai_api(ai_prompt, api_key, llm_model)
 
     # Clean the response to extract only markdown content
     cleaned_response = _extract_markdown_content(response)
@@ -49,12 +49,12 @@ Create a markdown document. Use proper markdown formatting including headers, li
 
 
 # Call OpenAI API to generate markdown
-def _call_openai_api(prompt: str, api_key: str) -> str:
+def _call_openai_api(prompt: str, api_key: str, llm_model: str) -> str:
     try:
         client = openai.OpenAI(api_key=api_key)
 
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model=llm_model,
             messages=[
                 {"role": "user", "content": prompt}
             ],

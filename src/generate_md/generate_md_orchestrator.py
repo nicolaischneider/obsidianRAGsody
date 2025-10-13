@@ -8,7 +8,7 @@ from .core.optimal_file_organizer import save_markdown_file
 
 
 # Main function to process URLs and create markdown files in the vault
-def generate_markdown_from_urls(urls: List[str], prompt: str, vault_path: str, api_key: str) -> str:
+def generate_markdown_from_urls(urls: List[str], prompt: str, vault_path: str, api_key: str, llm_model: str) -> str:
 
     try:
         # Step 1: Scrape content from all URLs
@@ -18,7 +18,7 @@ def generate_markdown_from_urls(urls: List[str], prompt: str, vault_path: str, a
             all_content.append({"url": url, "content": content})
 
         # Step 2: Generate combined markdown summary using AI
-        markdown_file = _generate_combined_markdown_summary(all_content, prompt, api_key)
+        markdown_file = _generate_combined_markdown_summary(all_content, prompt, api_key, llm_model)
 
         # Step 3: Create and save the single markdown file with optimal placement
         file_path = save_markdown_file(markdown_file, urls, vault_path)
@@ -42,7 +42,7 @@ def _scrape_url_content(url: str) -> str:
 
 
 # Generate combined markdown summary from all URL contents using AI
-def _generate_combined_markdown_summary(all_content: List[dict], prompt: str, api_key: str) -> str:
-    return generate_markdown_from_content(all_content, prompt, api_key)
+def _generate_combined_markdown_summary(all_content: List[dict], prompt: str, api_key: str, llm_model: str) -> str:
+    return generate_markdown_from_content(all_content, prompt, api_key, llm_model)
 
 

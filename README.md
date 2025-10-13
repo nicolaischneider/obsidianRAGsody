@@ -4,12 +4,12 @@ CLI tool for intelligent Obsidian vault interaction with two main features:
 
 ## Features
 
-### 1. Vault Querying (✅ Working)
+### 1. Vault Querying
 Ask questions about your vault content using natural language.
 - "What did I write about machine learning?"
 - "Show me my notes on productivity"
 
-### 2. URL to Note (✅ Working)
+### 2. URL to Note
 Create markdown files from URLs. Files saved to `RAGsody_created/` folder.
 - "Create a note from https://example.com about AI trends"
 - "Summarize this article: https://blog.example.com/post"
@@ -34,8 +34,7 @@ source .venv/bin/activate
 uv run python main.py
 ```
 
-
-On first run, enter your Obsidian vault path and OpenAI API key.
+On first run, enter your *Obsidian vault path* and *OpenAI API key*.
 
 ## Tech Stack
 
