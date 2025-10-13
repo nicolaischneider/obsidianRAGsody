@@ -5,6 +5,7 @@ from .env_setup import check_and_setup_env
 from .request_interpreter import interpret_request, RagVaultRequest, GenerateNewMarkdownRequest
 from .vault_rag.vault_rag import initialize_rag, query_vault
 from .generate_md.generate_md_orchestrator import generate_markdown_from_urls
+from .input_analyzer import analyze_input, InputAction
 
 # Setup environment and initialize RAG system
 def _setup_and_initialize(console: Console) -> tuple[str, str, str, str]:
@@ -35,7 +36,6 @@ def _handle_markdown_generation(console: Console, request: GenerateNewMarkdownRe
     if isinstance(result_data, dict) and result_data.get("success"):
         markdown = Markdown(result_data['markdown_content'])
         console.print(markdown)
-        console.print()
         console.print("\n[dim]------[/dim]")
         console.print(f"Created new note:\n{result_data['file_path']}\n")
     else:
@@ -60,18 +60,29 @@ def run_cli():
             console.print(Markdown("---"))
             user_input = prompt(f"{user_name}: ")
 
-            if user_input.lower() in ['quit', 'exit']:
-                print(f"\nBye, {user_name}!")
-                break
+            # Analyze input for special commands
+            action = analyze_input(user_input, console)
 
-            result = interpret_request(user_input)
+            match action:
+                # User requested to quit
+                case InputAction.QUIT:
+                    print(f"\nBye, {user_name}!")
+                    break
 
-            if isinstance(result, RagVaultRequest):
-                _handle_rag_query(console, result)
-            elif isinstance(result, GenerateNewMarkdownRequest):
-                _handle_markdown_generation(console, result, vault_path, api_key, llm_model)
-            else:
-                console.print("[red]Unknown request type[/red]")
+                # User input was handled (e.g., help command)
+                case InputAction.HANDLED:
+                    continue
+
+                # Continue to interpret the input
+                case InputAction.CONTINUE:
+                    result = interpret_request(user_input)
+
+                    if isinstance(result, RagVaultRequest):
+                        _handle_rag_query(console, result)
+                    elif isinstance(result, GenerateNewMarkdownRequest):
+                        _handle_markdown_generation(console, result, vault_path, api_key, llm_model)
+                    else:
+                        console.print("[red]Unknown request type[/red]")
 
         except (KeyboardInterrupt, EOFError):
             console.print(f"\nBye, {user_name}!")
