@@ -73,6 +73,12 @@ def run_cli():
                 case InputAction.HANDLED:
                     continue
 
+                # Config was updated, reload environment
+                case InputAction.CONFIG_UPDATED:
+                    vault_path, api_key, llm_model, user_name = _setup_and_initialize(console)
+                    print("Configuration reloaded.")
+                    continue
+
                 # Continue to interpret the input
                 case InputAction.CONTINUE:
                     result = interpret_request(user_input)

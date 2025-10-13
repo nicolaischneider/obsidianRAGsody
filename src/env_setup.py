@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 def check_and_setup_env():
     """Check for required environment variables and create .env if needed."""
-    load_dotenv()
+    load_dotenv(override=True)
 
     vault_path = os.getenv('OBSIDIAN_VAULT_PATH')
     api_key = os.getenv('API_KEY')
