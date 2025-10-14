@@ -47,9 +47,10 @@ On first run, enter your *Obsidian vault path* and *OpenAI API key*.
 ## Outlook
 
 ### Future Features
-- [ ] **Automatic Ordering of new files**: Automatically organize newly created markdown files into appropriate folders.
-- [ ] **Review of files before adding to vault**: Implement a review step for new files before they are added to the vault.
+- [x] **Automatic Ordering of new files**: Automatically organize newly created markdown files into appropriate folders.
+- [ ] **Review of files and folder path before adding to vault**: Implement a review step for new files before they are added to the vault.
 - [x] **LLM Model Selection**: Select the Open AI model of your choice
+- [ ] **Reload RAG index after creating new notes**: Automatically update the RAG index after new notes are created.
 - [ ] **Install**: Install the tool in your system for easy access
 
 ### Performance Improvements
