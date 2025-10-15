@@ -44,7 +44,18 @@ def _create_ai_prompt(content_text: str, user_prompt: str) -> str:
 def _extract_markdown_content(response: str) -> str:
     cleaned = response.strip()
 
-    # Check if response is wrapped in markdown code blocks
+    # Look for ```markdown anywhere in the response (not just at start)
+    markdown_start = cleaned.find('```markdown')
+    if markdown_start != -1:
+        # Find the closing ``` after the ```markdown
+        content_start = markdown_start + 11  # length of '```markdown'
+        end_marker = cleaned.find('```', content_start)
+        if end_marker != -1:
+            # Extract content between ```markdown and closing ```
+            cleaned = cleaned[content_start:end_marker].strip()
+            return cleaned
+
+    # Check if response starts with markdown code blocks
     if cleaned.startswith('```markdown'):
         # Find the last closing ``` (working backwards)
         end_marker = cleaned.rfind('```')

@@ -36,7 +36,9 @@ def _generate_filename_from_title(markdown_content: str) -> str:
     return f"{filename}.md"
 
 # Find the optimal folder for the new markdown file using RAG similarity
-def _find_optimal_folder(markdown_content: str, vault_path: Path) -> Path:
+def find_optimal_folder(markdown_content: str, vault_path: str) -> str:
+    vault = Path(vault_path)
+
     # Use RAG to find most similar existing files
     similar_files = find_similar_files(markdown_content, top_k=3)
 
@@ -46,23 +48,19 @@ def _find_optimal_folder(markdown_content: str, vault_path: Path) -> Path:
         optimal_folder = most_similar_file.parent
 
         # Make sure the folder exists and is within the vault
-        if optimal_folder.exists() and str(optimal_folder).startswith(str(vault_path)):
-            return optimal_folder
+        if optimal_folder.exists() and str(optimal_folder).startswith(str(vault)):
+            return str(optimal_folder)
 
     # Fallback to RAGsody_created if no similar files found or path issues
-    return vault_path / "RAGsody_created"
+    return str(vault / "RAGsody_created")
 
-# Save markdown content to optimal folder based on RAG similarity
-def save_markdown_file(markdown_content: str, urls: List[str], vault_path: str) -> str:
-    vault = Path(vault_path)
-
-    # Find optimal folder using RAG similarity
-    folder_path = _find_optimal_folder(markdown_content, vault)
-
+# Save markdown content to a specific folder
+def save_markdown_to_folder(markdown_content: str, folder_path: str) -> str:
+    folder = Path(folder_path)
     filename = _generate_filename_from_title(markdown_content)
 
-    folder_path.mkdir(parents=True, exist_ok=True)
-    file_path = folder_path / filename
+    folder.mkdir(parents=True, exist_ok=True)
+    file_path = folder / filename
 
     with open(file_path, 'w', encoding='utf-8') as f:
         f.write(markdown_content)
