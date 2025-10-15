@@ -2,10 +2,15 @@ from prompt_toolkit import prompt
 from rich.console import Console
 from rich.markdown import Markdown
 from .env_setup import check_and_setup_env
-from .request_interpreter import interpret_request, RagVaultRequest, GenerateNewMarkdownRequest
+from .request_interpreter import (
+    interpret_request,
+    RagVaultRequest,
+    GenerateNewMarkdownRequest,
+)
 from .vault_rag.vault_rag import initialize_rag, query_vault, rebuild_vault_index
 from .generate_md.generate_md_orchestrator import generate_markdown_from_urls
 from .input_analyzer import analyze_input, InputAction
+
 
 # Main CLI orchestrator that handles the interactive loop.
 def run_cli():
@@ -40,7 +45,9 @@ def run_cli():
 
                 # Config was updated, reload environment
                 case InputAction.CONFIG_UPDATED:
-                    vault_path, api_key, llm_model, user_name = _setup_and_initialize(console)
+                    vault_path, api_key, llm_model, user_name = _setup_and_initialize(
+                        console
+                    )
                     print("Configuration reloaded.")
                     continue
 
@@ -51,7 +58,9 @@ def run_cli():
                     if isinstance(result, RagVaultRequest):
                         _handle_rag_query(console, result)
                     elif isinstance(result, GenerateNewMarkdownRequest):
-                        _handle_markdown_generation(console, result, vault_path, api_key, llm_model)
+                        _handle_markdown_generation(
+                            console, result, vault_path, api_key, llm_model
+                        )
                     else:
                         console.print("[red]Unknown request type[/red]")
 
@@ -59,11 +68,13 @@ def run_cli():
             console.print(f"\nBye, {user_name}!")
             break
 
+
 # Setup environment and initialize RAG system
 def _setup_and_initialize(console: Console) -> tuple[str, str, str, str]:
     vault_path, api_key, llm_model, user_name = check_and_setup_env()
     initialize_rag(vault_path, api_key, llm_model)
     return vault_path, api_key, llm_model, user_name
+
 
 # Handle vault RAG query requests
 def _handle_rag_query(console: Console, request: RagVaultRequest) -> None:
@@ -72,8 +83,15 @@ def _handle_rag_query(console: Console, request: RagVaultRequest) -> None:
     if result["success"] is False:
         console.print(f"[red]{result['error']}[/red]")
 
+
 # Handle URL-to-markdown generation requests
-def _handle_markdown_generation(console: Console, request: GenerateNewMarkdownRequest, vault_path: str, api_key: str, llm_model: str) -> None:
+def _handle_markdown_generation(
+    console: Console,
+    request: GenerateNewMarkdownRequest,
+    vault_path: str,
+    api_key: str,
+    llm_model: str,
+) -> None:
     # Generate markdown from URLs and handle success/failure
     console.print("\n[dim italic]Generating markdown from URLs...[/dim italic]\n")
     result_data_with_success = generate_markdown_from_urls(
@@ -81,12 +99,14 @@ def _handle_markdown_generation(console: Console, request: GenerateNewMarkdownRe
         prompt=request.prompt,
         vault_path=vault_path,
         api_key=api_key,
-        llm_model=llm_model
+        llm_model=llm_model,
     )
 
     # Check for failure and notify user
     if result_data_with_success["success"] is False:
-        console.print(f"\n[red]Failed to generate markdown from URLs: {result_data_with_success['error']}[/red]\n")
+        console.print(
+            f"\n[red]Failed to generate markdown from URLs: {result_data_with_success['error']}[/red]\n"
+        )
 
     # If successful, reload the RAG index to include the new file
     else:

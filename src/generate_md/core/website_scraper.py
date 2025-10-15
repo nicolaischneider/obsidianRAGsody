@@ -8,14 +8,14 @@ def scrape_url(url: str) -> str:
     try:
         # Send GET request with headers to avoid blocking
         headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
         }
 
         response = requests.get(url, headers=headers, timeout=10)
         response.raise_for_status()  # Raise exception for bad status codes
 
         # Parse HTML content
-        soup = BeautifulSoup(response.content, 'html.parser')
+        soup = BeautifulSoup(response.content, "html.parser")
 
         # Extract title
         title = _extract_title(soup)
@@ -34,7 +34,7 @@ def scrape_url(url: str) -> str:
 
 # Extract page title
 def _extract_title(soup: BeautifulSoup) -> str:
-    title_tag = soup.find('title')
+    title_tag = soup.find("title")
     if title_tag:
         return title_tag.get_text().strip()
     return "No title found"
@@ -58,7 +58,7 @@ def _extract_main_content(soup: BeautifulSoup) -> str:
     # Clean up the text
     lines = (line.strip() for line in text.splitlines())
     chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
-    text = ' '.join(chunk for chunk in chunks if chunk)
+    text = " ".join(chunk for chunk in chunks if chunk)
 
     return text
 
@@ -67,15 +67,15 @@ def _extract_main_content(soup: BeautifulSoup) -> str:
 def _find_main_content_area(soup: BeautifulSoup) -> Optional[BeautifulSoup]:
     # Common selectors for main content
     content_selectors = [
-        'main',
-        'article',
+        "main",
+        "article",
         '[role="main"]',
-        '.content',
-        '.post-content',
-        '.entry-content',
-        '.article-content',
-        '#content',
-        '#main-content'
+        ".content",
+        ".post-content",
+        ".entry-content",
+        ".article-content",
+        "#content",
+        "#main-content",
     ]
 
     for selector in content_selectors:

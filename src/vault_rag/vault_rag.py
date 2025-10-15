@@ -8,7 +8,12 @@ import warnings
 from pathlib import Path
 from typing import Optional
 
-from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, Settings, StorageContext
+from llama_index.core import (
+    VectorStoreIndex,
+    SimpleDirectoryReader,
+    Settings,
+    StorageContext,
+)
 from llama_index.llms.openai import OpenAI
 from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.core.storage.docstore import SimpleDocumentStore
@@ -23,6 +28,7 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 
 # Suppress Pydantic warnings
 warnings.filterwarnings("ignore", category=UserWarning, module="pydantic.*")
+
 
 class VaultRAG:
 
@@ -45,13 +51,12 @@ class VaultRAG:
         Settings.llm = OpenAI(
             model=self.llm_model,
             api_key=self.api_key,
-            temperature=0.1  # Low temperature for more consistent answers
+            temperature=0.1,  # Low temperature for more consistent answers
         )
 
         # Set up OpenAI embeddings (converts text to searchable vectors)
         Settings.embed_model = OpenAIEmbedding(
-            model="text-embedding-3-small",
-            api_key=self.api_key
+            model="text-embedding-3-small", api_key=self.api_key
         )
 
     # Load documents from the Obsidian vault
@@ -60,18 +65,21 @@ class VaultRAG:
         reader = SimpleDirectoryReader(
             input_dir=str(self.vault_path),
             required_exts=[".md"],  # Only process .md files
-            recursive=True  # Include subfolders
+            recursive=True,  # Include subfolders
         )
 
         documents = reader.load_data()
 
         # Import here to avoid circular imports
         from rich.console import Console
+
         console = Console()
         console.print(f"[dim italic]Loaded {len(documents)} documents[/dim italic]")
 
         if len(documents) == 0:
-            console.print("[red]WARNING: No documents loaded! Check your vault path.[/red]")
+            console.print(
+                "[red]WARNING: No documents loaded! Check your vault path.[/red]"
+            )
 
         return documents
 
@@ -106,7 +114,7 @@ class VaultRAG:
             # Create a query engine from the index
             query_engine = self.index.as_query_engine(
                 similarity_top_k=5,  # Return top 5 most relevant chunks
-                response_mode="tree_summarize"
+                response_mode="tree_summarize",
             )
 
             # Add instruction to format response as markdown
@@ -116,8 +124,14 @@ class VaultRAG:
             response = query_engine.query(markdown_prompt)
             response_str = str(response).strip()
 
-            if not response_str or response_str.lower() in ['empty response', 'none', '']:
-                response_str = "No relevant information found in the vault for your query."
+            if not response_str or response_str.lower() in [
+                "empty response",
+                "none",
+                "",
+            ]:
+                response_str = (
+                    "No relevant information found in the vault for your query."
+                )
 
             # Print the response as markdown
             console = Console()
@@ -125,16 +139,10 @@ class VaultRAG:
             console.print(markdown)
             console.print()
 
-            return {
-                "success": True,
-                "error": None
-            }
+            return {"success": True, "error": None}
 
         except Exception as e:
-            return {
-                "success": False,
-                "error": str(e)
-            }
+            return {"success": False, "error": str(e)}
 
     # Find most similar documents to given content for folder placement
     def find_similar_documents(self, content: str, top_k: int = 3) -> list:
@@ -153,11 +161,11 @@ class VaultRAG:
             similar_files = []
             for node in nodes:
                 # The file path is stored in the node metadata
-                if hasattr(node, 'metadata') and 'file_path' in node.metadata:
-                    file_path = node.metadata['file_path']
+                if hasattr(node, "metadata") and "file_path" in node.metadata:
+                    file_path = node.metadata["file_path"]
                     similar_files.append(file_path)
-                elif hasattr(node, 'node') and hasattr(node.node, 'metadata'):
-                    file_path = node.node.metadata.get('file_path', '')
+                elif hasattr(node, "node") and hasattr(node.node, "metadata"):
+                    file_path = node.node.metadata.get("file_path", "")
                     if file_path:
                         similar_files.append(file_path)
 
@@ -178,6 +186,7 @@ def initialize_rag(vault_path: str, api_key: str, llm_model: str) -> VaultRAG:
     if _vault_rag is None:
         # Import here to avoid circular imports
         from rich.console import Console
+
         console = Console()
         console.print("[dim italic]Initializing RAG system...[/dim italic]")
 
@@ -193,7 +202,7 @@ def query_vault(prompt: str) -> dict:
     if _vault_rag is None:
         return {
             "success": False,
-            "error": "RAG system not initialized. Please run initialize_rag() first."
+            "error": "RAG system not initialized. Please run initialize_rag() first.",
         }
     return _vault_rag.query(prompt)
 
