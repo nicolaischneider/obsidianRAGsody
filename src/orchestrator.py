@@ -25,7 +25,7 @@ def _handle_rag_query(console: Console, request: RagVaultRequest) -> None:
 def _handle_markdown_generation(console: Console, request: GenerateNewMarkdownRequest, vault_path: str, api_key: str, llm_model: str) -> None:
     console.print("\n[dim italic]Generating markdown from URLs...[/dim italic]\n")
 
-    result_data = generate_markdown_from_urls(
+    result_data_with_success = generate_markdown_from_urls(
         urls=request.urls,
         prompt=request.prompt,
         vault_path=vault_path,
@@ -33,14 +33,8 @@ def _handle_markdown_generation(console: Console, request: GenerateNewMarkdownRe
         llm_model=llm_model
     )
 
-    if isinstance(result_data, dict) and result_data.get("success"):
-        markdown = Markdown(result_data['markdown_content'])
-        console.print(markdown)
-        console.print("\n[dim]------[/dim]")
-        console.print(f"Created new note:\n{result_data['file_path']}\n")
-    else:
-        error_msg = result_data.get("error", str(result_data))
-        console.print(f"\nError: {error_msg}\n")
+    if result_data_with_success["success"] is False:
+        print("\n[red]Failed to generate markdown from URLs.[/red]\n")
 
 # Main CLI orchestrator that handles the interactive loop.
 def run_cli():

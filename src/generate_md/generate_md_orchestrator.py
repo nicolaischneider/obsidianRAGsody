@@ -1,11 +1,17 @@
-# Orchestrates the generation and storage of markdown files in vault from various sources.
-
+from rich.console import Console
+from rich.markdown import Markdown
 from typing import List
 from pathlib import Path
 from .core.website_scraper import scrape_url
 from .core.page_generator import generate_markdown_from_content
 from .core.optimal_file_organizer import save_markdown_file
 
+def _print_md_to_console(markdown_content: str, file_path: str) -> None:
+    console = Console()
+    markdown = Markdown(markdown_content)
+    console.print(markdown)
+    console.print("\n[dim]------[/dim]")
+    console.print(f"Created new note:\n{file_path}\n")
 
 # Main function to process URLs and create markdown files in the vault
 def generate_markdown_from_urls(urls: List[str], prompt: str, vault_path: str, api_key: str, llm_model: str) -> str:
@@ -23,10 +29,12 @@ def generate_markdown_from_urls(urls: List[str], prompt: str, vault_path: str, a
         # Step 3: Create and save the single markdown file with optimal placement
         file_path = save_markdown_file(markdown_file, urls, vault_path)
 
+        # Step 4: Print the generated markdown to console
+        _print_md_to_console(markdown_file, file_path)
+
         return {
             "success": True,
-            "file_path": file_path,
-            "markdown_content": markdown_file
+            "error": None,
         }
 
     except Exception as e:
