@@ -1,8 +1,7 @@
 # Page Generator for given data as markdown
 
 from typing import List
-import openai
-
+from .ai_caller import call_openai_api
 
 # Generate markdown content from scraped URLs using OpenAI
 def generate_markdown_from_content(all_content: List[dict], prompt: str, api_key: str, llm_model: str) -> str:
@@ -13,13 +12,12 @@ def generate_markdown_from_content(all_content: List[dict], prompt: str, api_key
     ai_prompt = _create_ai_prompt(content_text, prompt)
 
     # Call OpenAI to generate markdown
-    response = _call_openai_api(ai_prompt, api_key, llm_model)
+    response = call_openai_api(ai_prompt, api_key, llm_model)
 
     # Clean the response to extract only markdown content
     cleaned_response = _extract_markdown_content(response)
 
     return cleaned_response
-
 
 # Prepare scraped content for AI processing
 def _prepare_content_for_ai(all_content: List[dict]) -> str:
@@ -34,38 +32,13 @@ def _prepare_content_for_ai(all_content: List[dict]) -> str:
 
     return "\n".join(prepared_content)
 
-
 # Create the prompt for OpenAI
 def _create_ai_prompt(content_text: str, user_prompt: str) -> str:
     system_prompt = f"""I have fetched content from the given URLs. The content can be found below.
-
-{content_text}
-
-Based on this content and the following request: "{user_prompt}"
-
-Create a markdown document. Use proper markdown formatting including headers, lists, bold text, links, etc. Return ONLY the markdown content without any introduction or explanation."""
-
+    {content_text}
+    Based on this content and the following request: "{user_prompt}"
+    Create a markdown document. Use proper markdown formatting including headers, lists, bold text, links, etc. Return ONLY the markdown content without any introduction or explanation."""
     return system_prompt
-
-
-# Call OpenAI API to generate markdown
-def _call_openai_api(prompt: str, api_key: str, llm_model: str) -> str:
-    try:
-        client = openai.OpenAI(api_key=api_key)
-
-        response = client.chat.completions.create(
-            model=llm_model,
-            messages=[
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.3  # Lower temperature for more consistent output
-        )
-
-        return response.choices[0].message.content.strip()
-
-    except Exception as e:
-        return f"Error generating markdown: {str(e)}"
-
 
 # Extract markdown content from AI response, removing outer code blocks
 def _extract_markdown_content(response: str) -> str:
