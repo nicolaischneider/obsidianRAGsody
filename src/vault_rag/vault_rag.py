@@ -14,6 +14,8 @@ from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.core.storage.docstore import SimpleDocumentStore
 from llama_index.core.storage.index_store import SimpleIndexStore
 from llama_index.core.vector_stores import SimpleVectorStore
+from rich.console import Console
+from rich.markdown import Markdown
 
 # Disable HTTP request logging
 logging.getLogger("openai").setLevel(logging.WARNING)
@@ -87,7 +89,7 @@ class VaultRAG:
         return self.index
 
     # Query the RAG system with a question about your vault content
-    def query(self, prompt: str) -> str:
+    def query(self, prompt: str) -> dict:
         # Build RAG if not already done
         if self.index is None:
             self.build_rag()
@@ -107,12 +109,24 @@ class VaultRAG:
             response_str = str(response).strip()
 
             if not response_str or response_str.lower() in ['empty response', 'none', '']:
-                return "No relevant information found in the vault for your query."
+                response_str = "No relevant information found in the vault for your query."
 
-            return response_str
+            # Print the response as markdown
+            console = Console()
+            markdown = Markdown(response_str)
+            console.print(markdown)
+            console.print()
+
+            return {
+                "success": True,
+                "error": None
+            }
 
         except Exception as e:
-            return f"Error querying RAG: {e}"
+            return {
+                "success": False,
+                "error": str(e)
+            }
 
     # Find most similar documents to given content for folder placement
     def find_similar_documents(self, content: str, top_k: int = 3) -> list:
@@ -167,9 +181,12 @@ def initialize_rag(vault_path: str, api_key: str, llm_model: str) -> VaultRAG:
 
 
 # Simple function to query the vault once RAG is initialized
-def query_vault(prompt: str) -> str:
+def query_vault(prompt: str) -> dict:
     if _vault_rag is None:
-        return "RAG system not initialized. Please run initialize_rag() first."
+        return {
+            "success": False,
+            "error": "RAG system not initialized. Please run initialize_rag() first."
+        }
     return _vault_rag.query(prompt)
 
 

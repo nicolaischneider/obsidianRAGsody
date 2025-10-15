@@ -16,15 +16,15 @@ def _setup_and_initialize(console: Console) -> tuple[str, str, str, str]:
 # Handle vault RAG query requests
 def _handle_rag_query(console: Console, request: RagVaultRequest) -> None:
     console.print("\n[dim italic]Searching vault...[/dim italic]\n")
-    answer = query_vault(request.prompt)
-    markdown = Markdown(answer)
-    console.print(markdown)
-    console.print()
+    result = query_vault(request.prompt)
+    if result["success"] is False:
+        console.print(f"[red]{result['error']}[/red]")
 
 # Handle URL-to-markdown generation requests
 def _handle_markdown_generation(console: Console, request: GenerateNewMarkdownRequest, vault_path: str, api_key: str, llm_model: str) -> None:
-    console.print("\n[dim italic]Generating markdown from URLs...[/dim italic]\n")
 
+    # Generate markdown from URLs and handle success/failure
+    console.print("\n[dim italic]Generating markdown from URLs...[/dim italic]\n")
     result_data_with_success = generate_markdown_from_urls(
         urls=request.urls,
         prompt=request.prompt,
@@ -33,8 +33,9 @@ def _handle_markdown_generation(console: Console, request: GenerateNewMarkdownRe
         llm_model=llm_model
     )
 
+    # Check for failure and notify user
     if result_data_with_success["success"] is False:
-        print("\n[red]Failed to generate markdown from URLs.[/red]\n")
+        console.print(f"\n[red]Failed to generate markdown from URLs: {result_data_with_success['error']}[/red]\n")
 
 # Main CLI orchestrator that handles the interactive loop.
 def run_cli():
