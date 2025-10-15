@@ -877,13 +877,14 @@ wheels = [
 [[package]]
 name = "obsidian-ragsody"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "beautifulsoup4" },
     { name = "llama-index-core" },
     { name = "llama-index-embeddings-openai" },
     { name = "llama-index-llms-openai" },
     { name = "llama-index-readers-file" },
+    { name = "platformdirs" },
     { name = "prompt-toolkit" },
     { name = "python-dotenv" },
     { name = "requests" },
@@ -897,6 +898,7 @@ requires-dist = [
     { name = "llama-index-embeddings-openai", specifier = ">=0.5.1" },
     { name = "llama-index-llms-openai", specifier = ">=0.6.4" },
     { name = "llama-index-readers-file", specifier = ">=0.5.4" },
+    { name = "platformdirs", specifier = ">=4.5.0" },
     { name = "prompt-toolkit", specifier = ">=3.0.52" },
     { name = "python-dotenv", specifier = ">=1.1.1" },
     { name = "requests", specifier = ">=2.32.5" },

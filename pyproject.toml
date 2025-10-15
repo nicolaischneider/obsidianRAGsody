@@ -1,7 +1,7 @@
 [project]
 name = "obsidian-ragsody"
 version = "0.1.0"
-description = "Add your description here"
+description = "CLI tool for intelligent Obsidian vault interaction using AI-powered search and content generation"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
@@ -10,8 +10,19 @@ dependencies = [
     "llama-index-embeddings-openai>=0.5.1",
     "llama-index-llms-openai>=0.6.4",
     "llama-index-readers-file>=0.5.4",
+    "platformdirs>=4.5.0",
     "prompt-toolkit>=3.0.52",
     "python-dotenv>=1.1.1",
     "requests>=2.32.5",
     "rich>=14.2.0",
 ]
+
+[project.scripts]
+obsidian-ragsody = "src.main:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]

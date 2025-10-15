@@ -1,22 +1,29 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from platformdirs import user_data_dir
+
+
+def get_env_file_path():
+    """Get the path to the .env file in user data directory."""
+    data_dir = Path(user_data_dir("obsidian_ragsody", "obsidian_ragsody"))
+    data_dir.mkdir(parents=True, exist_ok=True)
+    return data_dir / ".env"
 
 
 def check_and_setup_env():
     """Check for required environment variables and create .env if needed."""
-    load_dotenv(override=True)
+    env_file = get_env_file_path()
+    load_dotenv(env_file, override=True)
 
     vault_path = os.getenv('OBSIDIAN_VAULT_PATH')
     api_key = os.getenv('API_KEY')
     llm_model = os.getenv('LLM_MODEL')
     user_name = os.getenv('USER_NAME')
-
-    env_file = Path('.env')
     needs_setup = False
 
     if not vault_path:
-        vault_path = input("Enter path to your Obsidian vault: ").strip()
+        vault_path = input("Enter path to your Obsidian vault (eg /Users/.../obsidian): ").strip()
         needs_setup = True
 
     if not api_key:
