@@ -14,25 +14,24 @@ Create markdown files from URLs. Files are saved to either the root or to optima
 - "Create a note from https://example.com about AI trends"
 - "Summarize this article: https://blog.example.com/post"
 
-## Setup
+## Installation
 
-### First Time Setup
+```bash
+pipx install git+https://github.com/nicolaischneider/obsidianRAGsody.git
+obsidian-ragsody
+```
 
+Or run with uv:
 ```bash
 uv venv
 source .venv/bin/activate
 uv sync
-uv run python main.py
+uv run python src/main.py
 ```
 
-### Subsequent Runs
-
-```bash
-source .venv/bin/activate
-uv run python main.py
-```
-
-On first run, enter your *Obsidian vault path* and *OpenAI API key*.
+> **Warning**: On first run, you will be asked to enter 
+> * your *Obsidian vault path* (eg "/Users/your_username/obsidian")
+> * your *OpenAI API key*
 
 ## Tech Stack
 
