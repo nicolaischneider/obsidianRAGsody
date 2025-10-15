@@ -24,6 +24,13 @@ def generate_markdown_from_urls(urls: List[str], prompt: str, vault_path: str, a
         # Step 2.5: Get user approval and iterate if needed
         final_markdown = _get_user_approval_for_markdown(markdown_file, api_key, llm_model)
 
+        # Check if user cancelled the process
+        if final_markdown is None:
+            return {
+                "success": False,
+                "error": "Process cancelled by user"
+            }
+
         # Step 3.1: Find optimal folder using RAG similarity
         optimal_folder = find_optimal_folder(final_markdown, vault_path)
 
@@ -61,11 +68,15 @@ def _get_user_approval_for_markdown(markdown_content: str, api_key: str, llm_mod
         console.print("\n[dim]------[/dim]\n")
 
         # Ask for user approval
-        user_input = prompt("Are you satisfied with this markdown? (y/yes to approve, or provide feedback): ").strip().lower()
+        user_input = prompt("Are you satisfied with this markdown? (y/yes to approve, feedback for changes, cancel to quit): ").strip().lower()
 
         # If user approves, return the current markdown
         if user_input in ['y', 'yes']:
             return current_markdown
+
+        # If user wants to cancel, return None to indicate cancellation
+        if user_input == 'cancel':
+            return None
 
         # Otherwise, user provided feedback - ask AI to revise
         console.print("\n[dim italic]Revising markdown based on your feedback...[/dim italic]\n")
