@@ -54,7 +54,6 @@ def generate_markdown_from_urls(urls: List[str], prompt: str, vault_path: str, a
             "error": str(e)
         }
 
-
 # Get user approval for generated markdown and iterate if needed
 def _get_user_approval_for_markdown(markdown_content: str, api_key: str, llm_model: str) -> str:
     console = Console()

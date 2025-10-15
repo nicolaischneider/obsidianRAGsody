@@ -1,5 +1,3 @@
-# Page Generator for given data as markdown
-
 from typing import List
 from .ai_caller import call_openai_api
 

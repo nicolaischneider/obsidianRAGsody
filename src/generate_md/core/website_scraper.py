@@ -1,5 +1,3 @@
-# Website Scraper for extracting information from web pages
-
 import requests
 from bs4 import BeautifulSoup
 from typing import Optional

@@ -7,39 +7,6 @@ from .vault_rag.vault_rag import initialize_rag, query_vault, rebuild_vault_inde
 from .generate_md.generate_md_orchestrator import generate_markdown_from_urls
 from .input_analyzer import analyze_input, InputAction
 
-# Setup environment and initialize RAG system
-def _setup_and_initialize(console: Console) -> tuple[str, str, str, str]:
-    vault_path, api_key, llm_model, user_name = check_and_setup_env()
-    initialize_rag(vault_path, api_key, llm_model)
-    return vault_path, api_key, llm_model, user_name
-
-# Handle vault RAG query requests
-def _handle_rag_query(console: Console, request: RagVaultRequest) -> None:
-    console.print("\n[dim italic]Searching vault...[/dim italic]\n")
-    result = query_vault(request.prompt)
-    if result["success"] is False:
-        console.print(f"[red]{result['error']}[/red]")
-
-# Handle URL-to-markdown generation requests
-def _handle_markdown_generation(console: Console, request: GenerateNewMarkdownRequest, vault_path: str, api_key: str, llm_model: str) -> None:
-    # Generate markdown from URLs and handle success/failure
-    console.print("\n[dim italic]Generating markdown from URLs...[/dim italic]\n")
-    result_data_with_success = generate_markdown_from_urls(
-        urls=request.urls,
-        prompt=request.prompt,
-        vault_path=vault_path,
-        api_key=api_key,
-        llm_model=llm_model
-    )
-
-    # Check for failure and notify user
-    if result_data_with_success["success"] is False:
-        console.print(f"\n[red]Failed to generate markdown from URLs: {result_data_with_success['error']}[/red]\n")
-
-    # If successful, reload the RAG index to include the new file
-    else:
-        rebuild_vault_index()
-
 # Main CLI orchestrator that handles the interactive loop.
 def run_cli():
     console = Console()
@@ -91,3 +58,36 @@ def run_cli():
         except (KeyboardInterrupt, EOFError):
             console.print(f"\nBye, {user_name}!")
             break
+
+# Setup environment and initialize RAG system
+def _setup_and_initialize(console: Console) -> tuple[str, str, str, str]:
+    vault_path, api_key, llm_model, user_name = check_and_setup_env()
+    initialize_rag(vault_path, api_key, llm_model)
+    return vault_path, api_key, llm_model, user_name
+
+# Handle vault RAG query requests
+def _handle_rag_query(console: Console, request: RagVaultRequest) -> None:
+    console.print("\n[dim italic]Searching vault...[/dim italic]\n")
+    result = query_vault(request.prompt)
+    if result["success"] is False:
+        console.print(f"[red]{result['error']}[/red]")
+
+# Handle URL-to-markdown generation requests
+def _handle_markdown_generation(console: Console, request: GenerateNewMarkdownRequest, vault_path: str, api_key: str, llm_model: str) -> None:
+    # Generate markdown from URLs and handle success/failure
+    console.print("\n[dim italic]Generating markdown from URLs...[/dim italic]\n")
+    result_data_with_success = generate_markdown_from_urls(
+        urls=request.urls,
+        prompt=request.prompt,
+        vault_path=vault_path,
+        api_key=api_key,
+        llm_model=llm_model
+    )
+
+    # Check for failure and notify user
+    if result_data_with_success["success"] is False:
+        console.print(f"\n[red]Failed to generate markdown from URLs: {result_data_with_success['error']}[/red]\n")
+
+    # If successful, reload the RAG index to include the new file
+    else:
+        rebuild_vault_index()

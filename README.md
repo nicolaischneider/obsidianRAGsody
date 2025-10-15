@@ -1,6 +1,6 @@
 # Obsidian RAGsody
 
-CLI tool for intelligent Obsidian vault interaction with two main features:
+CLI tool for intelligent Obsidian vault interaction using Retrieval-Augmented Generation (RAG).
 
 ## Features
 
@@ -41,18 +41,10 @@ uv run python src/main.py
 - **[rich](https://github.com/Textualize/rich)**: Beautiful markdown rendering
 - **[prompt-toolkit](https://github.com/prompt-toolkit/python-prompt-toolkit)**: Interactive CLI
 
-## Outlook
+## Outlook for upcoming features:
 
-### Future Features
-- [x] **Automatic Ordering of new files**: Automatically organize newly created markdown files into appropriate folders.
-- [x] **Review of files and folder path before adding to vault**: Implement a review step for new files before they are added to the vault.
-- [x] **LLM Model Selection**: Select the Open AI model of your choice
-- [x] **Reload RAG index after creating new notes**: Automatically update the RAG index after new notes are created.
-- [ ] **Install**: Install the tool in your system for easy access
-
-### Performance Improvements
 - [ ] **Faster parsing**: Upgrade to `selectolax` for 10x faster HTML parsing
-- [x] **Index caching**: Persistent RAG index storage for faster startup
+- [ ] **Index caching**: Persistent RAG index storage for faster startup
 - [ ] **Parallel scraping**: Concurrent URL processing for multiple links
 
 ## Requirements
@@ -60,3 +52,4 @@ uv run python src/main.py
 - Python 3.13+
 - OpenAI API key
 - Obsidian vault (local folder with .md files)
+- (optional) `pipx` for easy CLI installation

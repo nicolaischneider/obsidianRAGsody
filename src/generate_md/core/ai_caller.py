@@ -1,4 +1,3 @@
-# AI caller for OpenAI API interactions
 import openai
 
 # Call OpenAI API with a given prompt

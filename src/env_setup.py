@@ -3,17 +3,9 @@ from pathlib import Path
 from dotenv import load_dotenv
 from platformdirs import user_data_dir
 
-
-def get_env_file_path():
-    """Get the path to the .env file in user data directory."""
-    data_dir = Path(user_data_dir("obsidian_ragsody", "obsidian_ragsody"))
-    data_dir.mkdir(parents=True, exist_ok=True)
-    return data_dir / ".env"
-
-
 def check_and_setup_env():
     """Check for required environment variables and create .env if needed."""
-    env_file = get_env_file_path()
+    env_file = _get_env_file_path()
     load_dotenv(env_file, override=True)
 
     vault_path = os.getenv('OBSIDIAN_VAULT_PATH')
@@ -49,3 +41,10 @@ def check_and_setup_env():
 
     print(f"- Using vault: {vault_path}, model: {llm_model}, hello {user_name}!\n")
     return vault_path, api_key, llm_model, user_name
+
+
+def _get_env_file_path():
+    """Get the path to the .env file in user data directory."""
+    data_dir = Path(user_data_dir("obsidian_ragsody", "obsidian_ragsody"))
+    data_dir.mkdir(parents=True, exist_ok=True)
+    return data_dir / ".env"
