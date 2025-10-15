@@ -21,13 +21,11 @@ Create markdown files from URLs. Files are saved to either the root or to optima
 ```bash
 uv venv
 source .venv/bin/activate
-uv init
-uv add llama-index-core llama-index-llms-openai llama-index-embeddings-openai
-uv add prompt-toolkit python-dotenv requests beautifulsoup4 rich
+uv sync
 uv run python main.py
 ```
 
-### Load
+### Subsequent Runs
 
 ```bash
 source .venv/bin/activate
@@ -55,5 +53,11 @@ On first run, enter your *Obsidian vault path* and *OpenAI API key*.
 
 ### Performance Improvements
 - [ ] **Faster parsing**: Upgrade to `selectolax` for 10x faster HTML parsing
-- [ ] **Index caching**: Persistent RAG index storage for faster startup
+- [x] **Index caching**: Persistent RAG index storage for faster startup
 - [ ] **Parallel scraping**: Concurrent URL processing for multiple links
+
+## Requirements
+
+- Python 3.13+
+- OpenAI API key
+- Obsidian vault (local folder with .md files)
