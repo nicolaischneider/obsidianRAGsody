@@ -40,8 +40,8 @@ def generate_markdown_from_urls(urls: List[str], prompt: str, vault_path: str, a
         # Step 4: Save the markdown file to chosen folder
         file_path = save_markdown_to_folder(final_markdown, chosen_folder)
 
-        # Step 5: Print the generated markdown to console
-        _print_md_to_console(final_markdown, file_path)
+        # Step 5: Print the used file_path to console
+        _print_file_path_to_console(file_path)
 
         return {
             "success": True,
@@ -107,9 +107,7 @@ def _get_user_approval_for_folder(optimal_folder: str, vault_path: str) -> str:
         return vault_path
 
 # Print the generated markdown to console
-def _print_md_to_console(markdown_content: str, file_path: str) -> None:
+def _print_file_path_to_console(file_path: str) -> None:
     console = Console()
-    markdown = Markdown(markdown_content)
-    console.print(markdown)
     console.print("\n[dim]------[/dim]")
     console.print(f"Created new note:\n{file_path}\n")

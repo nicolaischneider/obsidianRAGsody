@@ -3,7 +3,7 @@ from rich.console import Console
 from rich.markdown import Markdown
 from .env_setup import check_and_setup_env
 from .request_interpreter import interpret_request, RagVaultRequest, GenerateNewMarkdownRequest
-from .vault_rag.vault_rag import initialize_rag, query_vault
+from .vault_rag.vault_rag import initialize_rag, query_vault, rebuild_vault_index
 from .generate_md.generate_md_orchestrator import generate_markdown_from_urls
 from .input_analyzer import analyze_input, InputAction
 
@@ -22,7 +22,6 @@ def _handle_rag_query(console: Console, request: RagVaultRequest) -> None:
 
 # Handle URL-to-markdown generation requests
 def _handle_markdown_generation(console: Console, request: GenerateNewMarkdownRequest, vault_path: str, api_key: str, llm_model: str) -> None:
-
     # Generate markdown from URLs and handle success/failure
     console.print("\n[dim italic]Generating markdown from URLs...[/dim italic]\n")
     result_data_with_success = generate_markdown_from_urls(
@@ -36,6 +35,10 @@ def _handle_markdown_generation(console: Console, request: GenerateNewMarkdownRe
     # Check for failure and notify user
     if result_data_with_success["success"] is False:
         console.print(f"\n[red]Failed to generate markdown from URLs: {result_data_with_success['error']}[/red]\n")
+
+    # If successful, reload the RAG index to include the new file
+    else:
+        rebuild_vault_index()
 
 # Main CLI orchestrator that handles the interactive loop.
 def run_cli():

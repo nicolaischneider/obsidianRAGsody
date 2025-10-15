@@ -75,6 +75,14 @@ class VaultRAG:
 
         return documents
 
+    # Force rebuild of the RAG index (useful when new files are added)
+    def rebuild_index(self):
+        console = Console()
+        console.print("[dim italic]Rebuilding RAG index...[/dim italic]")
+        self.index = None
+        self.build_rag()
+        console.print("[dim italic]RAG index rebuilt![/dim italic]")
+
     # Build the RAG index from vault documents
     def build_rag(self):
         # If already built, just return it (avoid rebuilding)
@@ -195,3 +203,11 @@ def find_similar_files(content: str, top_k: int = 3) -> list:
     if _vault_rag is None:
         return []
     return _vault_rag.find_similar_documents(content, top_k)
+
+
+# Rebuild the RAG index to include new files
+def rebuild_vault_index():
+    if _vault_rag is None:
+        return "RAG system not initialized. Please run initialize_rag() first."
+    _vault_rag.rebuild_index()
+    return "RAG index rebuilt successfully!"

@@ -10,7 +10,7 @@ Ask questions about your vault content using natural language.
 - "Show me my notes on productivity"
 
 ### 2. URL to Note
-Create markdown files from URLs. Files saved to `RAGsody_created/` folder.
+Create markdown files from URLs. Files are saved to either the root or to optimal folders based on content similarity.
 - "Create a note from https://example.com about AI trends"
 - "Summarize this article: https://blog.example.com/post"
 
@@ -48,9 +48,9 @@ On first run, enter your *Obsidian vault path* and *OpenAI API key*.
 
 ### Future Features
 - [x] **Automatic Ordering of new files**: Automatically organize newly created markdown files into appropriate folders.
-- [ ] **Review of files and folder path before adding to vault**: Implement a review step for new files before they are added to the vault.
+- [x] **Review of files and folder path before adding to vault**: Implement a review step for new files before they are added to the vault.
 - [x] **LLM Model Selection**: Select the Open AI model of your choice
-- [ ] **Reload RAG index after creating new notes**: Automatically update the RAG index after new notes are created.
+- [x] **Reload RAG index after creating new notes**: Automatically update the RAG index after new notes are created.
 - [ ] **Install**: Install the tool in your system for easy access
 
 ### Performance Improvements
