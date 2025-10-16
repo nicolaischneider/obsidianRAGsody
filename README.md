@@ -1,3 +1,7 @@
+<p align="center">
+    <img src="obsidian-ragsody.png" width="1000" alt="Obsidian RAGsody"/>
+</p>
+
 # Obsidian RAGsody
 
 CLI tool for intelligent Obsidian vault interaction using Retrieval-Augmented Generation (RAG).
